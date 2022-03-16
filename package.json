@@ -1,0 +1,35 @@
+{
+  "name": "deliverable2-onlive",
+  "version": "0.0.1",
+  "description": "movies app backend",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/javierfonsi/deliverable2-nodejs.git"
+  },
+  "keywords": [
+    "movies",
+    "actors",
+    "etc"
+  ],
+  "author": "3R - Rivers Roberto Rodrigo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/javierfonsi/deliverable2-nodejs/issues"
+  },
+  "homepage": "https://github.com/javierfonsi/deliverable2-nodejs#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "git": "^0.1.5",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.17.0"
+  }
+}
