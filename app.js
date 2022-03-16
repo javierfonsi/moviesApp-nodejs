@@ -13,17 +13,3 @@ app.use(express.json())
 app.use('/api/v1/users', usersRouter)
 
 module.exports = { app }
-
-//sequelize
-//    .authenticate()
-//    .then(() => console.log('Database authenticated'))
-//    .catch(error => console.log(error))    
-
-//sequelize
-//    .sync()
-//    .then(() => console.log('Database sync'))
-//    .catch(error => console.log(error))
-
-//app.listen(4000, () => {
-//    console.log('Running express server')
-//})

@@ -4,34 +4,42 @@ const { DataTypes } = require('sequelize')
 //import DB
 const { sequelize } = require('../utils/database')
 
-const User = sequelize.define('user', {
-    id: {
+const Movies = sequelize.define('movies', {
+    id:{
         primaryKey: true,
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false
     },
-    username: {
+    title:{
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    email: {
+    description:{
+        type: DataTypes.STRING(250),
+        allowNull: false
+    },
+    duration:{
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    password: {
+    rating:{
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    img:{
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    genre:{
         type: DataTypes.STRING(50),
         allowNull: false
     },
-    status: {
-        type: DataTypes.STRING(50),
+    status:{
+        type: DataTypes.STRING,
         allowNull: false,
         defaultValue: 'active'
-    },
-    role: {
-        type: DataTypes.STRING(50),
-        allowNull: false
     }
-})
+})    
 
-module.exports = { User }
+module.exports = { Movies }
