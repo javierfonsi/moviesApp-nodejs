@@ -1,6 +1,7 @@
 const { User } = require('../models/users.model');
 const { Actor } = require('../models/actors.model');
 const { Movies } = require('../models/movies.model');
+const { Review } = require('../models/reviews.model');
 
 const initModels = () => {
 // 1 movie <----> M Actors
@@ -12,8 +13,8 @@ const initModels = () => {
 //  Actor.belongsTo(Movies);
 
 // 1 User <----> M Reviews
-  User.hasMany(Reviews);
-  Reviews.belongsTo(User);
+  User.hasMany(Review);
+  Review.belongsTo(User);
 
 // 
 

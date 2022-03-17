@@ -21,4 +21,4 @@ const ActorsInMovies = sequelize.define('actorsinmovies', {
     }
 })    
 
-module.exports = { Movies }
+module.exports = { ActorsInMovies }
