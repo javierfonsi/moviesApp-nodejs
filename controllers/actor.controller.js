@@ -1,6 +1,7 @@
 const { Actor } = require('../models/actors.model');
 const { AppError } = require('../utils/appError');
-const { catchAsync } = require('../utils/catchAsync')
+const { catchAsync } = require('../utils/catchAsync');
+const { filterObj } = require('../utils/filterObj');
 
 exports.getAllActors = catchAsync( async ( req, res, next) => {
         const actor = await Actor.findAll({
@@ -64,3 +65,44 @@ exports.createActor = catchAsync( async (req, res, next) => {
             }
         })
 })
+
+exports.updateActor = catchAsync( async (req, res, next) => {
+    const { id } = req.params
+    const data = filterObj(req.body, 'name', 'country', 'rating', 'age', 'profilePic' )
+
+    const actor = await Actor.findOne({
+        where: {id: id, status: 'active'}
+    })
+
+    if(!actor){
+        return next(
+            new AppError(400, 'Must provide a valid the propeties names correctly')
+        )
+    }
+
+    await actor.update({...data})
+    res.status(201).json({
+        status: 'success',
+        message: `The actor with id ${id} was update correctly`
+    })
+})
+
+exports.deleteActor = catchAsync( async(req, res, next) => {
+    const { id } = req.params
+    const actor = await Actor.findOne({
+        where: {id: id, status: 'active'}
+    })
+
+    if(!actor){
+        return next(
+            new AppError(400, 'Id not found' )
+        )
+    }
+
+    await actor.update({ status: 'deleted' })
+    res.status(201).json({
+        status: 'success',
+        message: `The Id ${id} was deleted correctly`
+    })
+}
+)

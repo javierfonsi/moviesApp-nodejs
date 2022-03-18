@@ -1,6 +1,7 @@
 const { Movies } = require('../models/movies.model');
 const { AppError } = require('../utils/appError');
-const { catchAsync } = require('../utils/catchAsync')
+const { catchAsync } = require('../utils/catchAsync');
+const { filterObj } = require('../utils/filterObj');
 
 exports.getAllMovies = catchAsync( async ( req, res, next) => {
         const movies = await Movies.findAll({
@@ -65,3 +66,44 @@ exports.createMovie = catchAsync( async (req, res, next) => {
             }
         })
 })
+
+exports.updateMovie = catchAsync( async (req, res, next) => {
+    const { id } = req.params
+    const data = filterObj(req.body, 'title', 'description', 'duration', 'rating', 'img', 'genre' )
+
+    const movie = await Movies.findOne({
+        where: {id: id, status: 'active'}
+    })
+
+    if(!movie){
+        return next(
+            new AppError(400, 'Must provide a valid the propeties names correctly')
+        )
+    }
+
+    await movie.update({...data})
+    res.status(201).json({
+        status: 'success',
+        message: `The movie with id ${id} was update correctly`
+    })
+})
+
+exports.deleteMovie = catchAsync( async(req, res, next) => {
+    const { id } = req.params
+    const movie = await Movies.findOne({
+        where: {id: id, status: 'active'}
+    })
+
+    if(!movie){
+        return next(
+            new AppError(400, 'Id not found' )
+        )
+    }
+
+    await movie.update({ status: 'deleted' })
+    res.status(201).json({
+        status: 'success',
+        message: `The Id ${id} was deleted correctly`
+    })
+}
+)
