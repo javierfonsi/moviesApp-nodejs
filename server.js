@@ -15,7 +15,7 @@ initModels();
 sequelize
   //.sync({ force: true })
   .sync()
-  .then(() => console.log('Database synced'))
+  .then(() => console.log('Database synchronized'))
   .catch((err) => console.log(err));
 // process.ENV.PORT
 //si port esta definida y tiene un valor  entonces el port sera igual al puerto (4000)

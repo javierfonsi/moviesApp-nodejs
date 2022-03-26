@@ -1,24 +1,29 @@
-const express = require('express')
-const { 
-    getAllMovies, 
-    getMovieById, 
-    createMovie,
-    updateMovie,
-    deleteMovie
-} = require('../controllers/movies.controller')
+const express = require('express');
 
+const {
+  getAllMovies,
+  createMovie,
+  getMovieById,
+  updateMovie,
+  deleteMovie
+} = require('../controllers/movies.controller');
 
-const router = express.Router() 
+// Middlewares
+const {
+  validateSession,
+  userAdmin
+} = require('../middlewares/auth.middlewares');
+const { moviesExist } = require('../middlewares/movies.middlewares');
 
-router.get('/', getAllMovies)
+// Utils
+const { upload } = require('../utils/multer');
 
-router.get('/:id', getMovieById)
+const router = express.Router();
+router.use(validateSession);
+router.get('/', getAllMovies);
+router.post('/', userAdmin, upload.single('imgUrl'), createMovie);
 
-router.post('/', createMovie)
+router.use('/:id', moviesExist);
+router.route('/:id').get(getMovieById).patch(updateMovie).delete(deleteMovie);
 
-router.patch('/:id', updateMovie)
-
-router.delete('/:id', deleteMovie)
-
-
-module.exports = {movieRouter: router}
+module.exports = { movieRouter: router };

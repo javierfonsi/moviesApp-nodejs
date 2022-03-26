@@ -1,25 +1,25 @@
-const express = require('express')
+const express = require('express');
 
-const { 
-    getAllActors, 
-    getActorsById,
-    createActor, 
-    updateActor,
-    deleteActor
-} = require('../controllers/actor.controller')
+const {
+  getAllActors,
+  getActorsById,
+  createActor,
+  updateActor,
+  deleteActor
+} = require('../controllers/actor.controller');
 
+// Middlewares
+const { validateSession } = require('../middlewares/auth.middlewares');
 
+// Utils
+const { upload } = require('../utils/multer');
 
-const router = express.Router() 
+const router = express.Router();
+router.use(validateSession);
+router.get('/', getAllActors);
+router.get('/:id', getActorsById);
+router.post('/', upload.single('pictureProfile'), createActor);
+router.patch('/:id', updateActor);
+router.delete('/:id', deleteActor);
 
-router.get('/', getAllActors)
-
-router.get('/:id', getActorsById)
-
-router.post('/', createActor)
-
-router.patch('/:id', updateActor)
-
-router.delete('/:id', deleteActor)
-
-module.exports = {actorsRouter: router}
+module.exports = { actorsRouter: router };

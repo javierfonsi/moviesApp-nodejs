@@ -1,27 +1,37 @@
-const express = require('express')
+const express = require('express');
 
-const { 
-    getAllUsers, 
-    createUser, 
-    getUserById,
-    updateUser,
-    deleteUser,
-    loginUser
-} = require('../controllers/user.controller')
-const { validateSession } = require('../middlewares/auth.middlewares')
+//Controllers
+const {
+  getAllUsers,
+  createUser,
+  getUserById,
+  updateUser,
+  deleteUser,
+  loginUser,
+  checkToken
+} = require('../controllers/user.controller');
 
-const router = express.Router() 
+//Middlewares
+const { validateSession } = require('../middlewares/auth.middlewares');
+const {
+  userExists,
+  protectAccountOwner
+} = require('../middlewares/users.middlewares');
 
-router.get('/', validateSession, getAllUsers)
+const router = express.Router();
 
-router.get('/:id', validateSession, getUserById)
+router.post('/login', loginUser);
+router.post('/', createUser);
 
-router.post('/', createUser)
+router.use(validateSession);
+router.get('/', getAllUsers);
+router.get('/check-token', checkToken);
 
-router.patch('/:id', validateSession, updateUser)
+router.use('/:id', userExists);
+router
+  .route('/:id')
+  .get(getUserById)
+  .patch(protectAccountOwner, updateUser)
+  .delete(protectAccountOwner, deleteUser);
 
-router.delete('/:id', validateSession, deleteUser)
-
-router.post('/login', loginUser)
-
-module.exports = {usersRouter: router}
+module.exports = { usersRouter: router };
