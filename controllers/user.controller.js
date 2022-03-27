@@ -15,7 +15,6 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     where: { status: 'active' }
   });
 
-  //console.log(user);
   //if(!user){
   if (user.length === 0) {
     return next(new AppError(404, 'There are not users until'));
@@ -23,9 +22,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 
   res.status(201).json({
     status: 'success',
-    data: {
-      user
-    }
+    data: { user }
   });
 });
 
@@ -56,9 +53,9 @@ exports.createUser = catchAsync(async (req, res, next) => {
     return next(new AppError(404, 'Verify the properties and their content'));
   }
 
-  //const salt = await bcrypt.genSalt(12);
+  const salt = await bcrypt.genSalt(12);
 
-  const hashedPassword = await bcrypt.hash(password, 8);
+  const hashedPassword = await bcrypt.hash(password, salt);
 
   const user = await User.create({
     username: username,
@@ -101,7 +98,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 exports.loginUser = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({
-    where: { status: 'active' }
+    where: {email: email, status: 'active' }
   });
 
   // Compare entered password vs hashed password
@@ -128,17 +125,3 @@ exports.loginUser = catchAsync(async (req, res, next) => {
 exports.checkToken = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success' });
 });
-
-//const { id } = req.params
-//const user = await User.findOne({
-//    where: {id: id, status: 'active'}
-//})
-
-//if(!user){
-//    return next(
-//        new AppError(400, 'Id not found' )
-//    )
-//}
-
-//const user = await User.findOne({where: {id: req.user.id}})
-//console.log(req.user.id);

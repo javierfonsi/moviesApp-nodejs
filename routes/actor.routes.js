@@ -17,8 +17,8 @@ const { upload } = require('../utils/multer');
 const router = express.Router();
 router.use(validateSession);
 router.get('/', getAllActors);
-router.get('/:id', getActorsById);
 router.post('/', upload.single('pictureProfile'), createActor);
+router.get('/:id', getActorsById);
 router.patch('/:id', updateActor);
 router.delete('/:id', deleteActor);
 

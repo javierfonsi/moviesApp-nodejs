@@ -23,8 +23,9 @@ exports.validateSession = catchAsync(async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   }
 
+  //console.log(token)
   if (!token) {
-    return next(new AppError(401, 'Invalid session'));
+    return next(new AppError(401, 'The token does not was delivery, please add it'));
   }
 
   // Verify that token is still valid
@@ -36,10 +37,8 @@ exports.validateSession = catchAsync(async (req, res, next) => {
   // Validate that the id the token contains belongs to a valid user
   // SELECT id, email FROM users;
   const user = await User.findOne({
-    where: { id: decodedToken.id, status: 'active' },
-    attributes: {
-      exclude: ['password']
-    }
+    attributes: { exclude: ['password']},
+    where: { id: decodedToken.id, status: 'active' }
   });
 
   if (!user) {
@@ -48,7 +47,7 @@ exports.validateSession = catchAsync(async (req, res, next) => {
 
   //req.anyName = anyValue
   req.currentUser = user;
-
+ 
   // Grant access
   next();
 });
@@ -57,8 +56,6 @@ exports.userAdmin = catchAsync(async (req, res, next) => {
   if (req.currentUser.role !== 'admin') {
     return next(new AppError(403, 'Access denied'));
   }
-
-  console.log('Si sale');
-
+ 
   next();
 });

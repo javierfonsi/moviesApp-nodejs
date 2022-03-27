@@ -1,6 +1,7 @@
 const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
 const { Actor } = require('../models/actors.model');
 const { Movies } = require('../models/movies.model');
+const { Review } = require('../models/reviews.model');
 const { AppError } = require('../utils/appError');
 const { catchAsync } = require('../utils/catchAsync');
 const { filterObj } = require('../utils/filterObj');
@@ -11,10 +12,12 @@ exports.getAllMovies = catchAsync(async (req, res, next) => {
     where: { status: 'active' },
     include: [
       {
-        model: Actor
+        model: Actor 
         //attributes: { exclude: ['actorsinmovies'] }
       }
     ]
+    //, include:[{ model: Review}]
+    //No sirve, revisar con Robert
   });
 
   if (movies.length === 0) {
@@ -72,17 +75,21 @@ exports.getAllMovies = catchAsync(async (req, res, next) => {
 });
 
 exports.getMovieById = catchAsync(async (req, res, next) => {
-  const { movie } = req;
+  //const { movie } = req;
+  const { id } = req.movie;
+  const movieSelected = await Movies.findOne({
+    where: {id, status: 'active'}, include: [{model : Actor}]  
+  }) 
   res.status(200).json({
     status: 'success',
     data: {
-      movie
+      movieSelected
     }
   });
 });
 
 exports.createMovie = catchAsync(async (req, res, next) => {
-  const { title, description, duration, rating, imgUrl, genre, actors } =
+  const { title, description, duration, rating, imgUrl, genre} =
     req.body;
   if (!title || !description || !duration || !rating || !genre) {
     return next(new AppError(404, 'Verify the properties and their content'));
@@ -98,8 +105,7 @@ exports.createMovie = catchAsync(async (req, res, next) => {
     duration: duration,
     rating: rating,
     imgUrl: result.metadata.fullPath,
-    genre: genre,
-    actors
+    genre: genre
   });
 
   res.status(200).json({
