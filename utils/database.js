@@ -11,13 +11,19 @@ const sequelize = new Sequelize({
   database: process.env.DB,
   dialect: 'postgres',
   logging: false
-  //,
-  //   dialectOptions: {
-  //   ssl: {
-  //     require: true,
-  //     rejectUnauthorized: false
-  //   }
-  // }
+  ,
+     dialectOptions: {
+     ssl: {
+       require: true,
+       rejectUnauthorized: false
+     }
+   }
 });
 
 module.exports = { sequelize };
+
+
+// para hacer el deploy en heroku, se debe subir a github el archivo creado con nombre procfile, así como descomentar las lineas 14 al 20 de esta hoja.
+
+// instrucciones para hacer el deploy de un proyecto de backend en heroku
+// 1. acceder al link de heroku y seleccionar la opcion
