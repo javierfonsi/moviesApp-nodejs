@@ -27,11 +27,10 @@ router.post('/', userAdmin, upload.single('imgUrl'), createMovie);
 router.use('/:id', moviesExist);
 router.route('/:id').get(getMovieById).patch(userAdmin, updateMovie).delete(userAdmin, deleteMovie);
 
+//Las siguiente forma no funciona sino solamente getMovieById
 //router.route('/:id').get(getMovieById)
 //router.use(userAdmin)
 //router.patch(updateMovie)
 //router.delete(deleteMovie)
 
 module.exports = { movieRouter: router };
-
-//Las siguiente forma no funciona sino solamente getMovieById

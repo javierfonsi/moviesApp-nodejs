@@ -8,19 +8,26 @@ const Actor = sequelize.define('actor', {
     primaryKey: true,
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    allowNull: false
+    allowNull: false,
   },
   name: {
     type: DataTypes.STRING(100),
-    allowNull: false
+    allowNull: false,
+    require: true
   },
   country: {
     type: DataTypes.STRING(50),
-    allowNull: false
+    allowNull: false,
+    require: true
   },
   rating: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    require: true,
+    validate: {
+      max:5,
+      min:1
+    }
   },
   age: {
     type: DataTypes.INTEGER,

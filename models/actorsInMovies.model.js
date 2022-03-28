@@ -4,7 +4,7 @@ const { DataTypes } = require('sequelize');
 //import DB
 const { sequelize } = require('../utils/database');
 
-const ActorsInMovies = sequelize.define('actorsinmovies', {
+const ActorsInMovie = sequelize.define('actorsinmovie', {
   id: {
     primaryKey: true,
     type: DataTypes.INTEGER,
@@ -21,4 +21,4 @@ const ActorsInMovies = sequelize.define('actorsinmovies', {
   }
 });
 
-module.exports = { ActorsInMovies };
+module.exports = { ActorsInMovie };

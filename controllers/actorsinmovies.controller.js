@@ -1,4 +1,4 @@
-const { ActorsInMovies } = require('../models/actorsInMovies.model');
+const { ActorsInMovie } = require('../models/actorsInMovies.model');
 const { AppError } = require('../utils/appError');
 const { catchAsync } = require('../utils/catchAsync');
 
@@ -23,7 +23,7 @@ exports.getAllActorsInMovies = catchAsync(async (req, res, next) => {
 
 exports.getActorsInMoviesById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const actorsinmovies = await ActorsInMovies.findOne({
+  const actorsinmovies = await ActorsInMovie.findOne({
     //where: {id: id, status: 'active'}
     where: { id: id }
   });
@@ -45,7 +45,7 @@ exports.createActorsInMovies = catchAsync(async (req, res, next) => {
   if (!actorId || !movieId) {
     return next(new AppError(404, 'Verify the properties and their content'));
   }
-  const actorsinmovies = await ActorsInMovies.create({
+  const actorsinmovies = await ActorsInMovie.create({
     actorId: actorId,
     movieId: movieId
   });

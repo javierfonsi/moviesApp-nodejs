@@ -1,5 +1,5 @@
 // Models
-const { Movies } = require('../models/movies.model');
+const { Movie } = require('../models/movies.model');
 
 // Utils
 const { AppError } = require('../utils/appError');
@@ -8,7 +8,7 @@ const { catchAsync } = require('../utils/catchAsync');
 exports.moviesExist = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
-  const movie = await Movies.findOne({
+  const movie = await Movie.findOne({
     where: { id: id, status: 'active' }
   });
 

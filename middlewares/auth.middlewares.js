@@ -18,14 +18,15 @@ exports.validateSession = catchAsync(async (req, res, next) => {
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
-  ) {
-    // Bearer token123.split(' ') -> [Bearer, token123]
-    token = req.headers.authorization.split(' ')[1];
-  }
-
-  //console.log(token)
+    ) {
+      // Bearer token123.split(' ') -> [Bearer, token123]
+      token = req.headers.authorization.split(' ')[1];
+    }
+    
+    
+  //console.log( token )
   if (!token) {
-    return next(new AppError(401, 'The token does not was delivery, please add it'));
+    return next(new AppError(401, "The token wasn't delivery, please add it" ));// : "There isn't any delivered header, please verify it"
   }
 
   // Verify that token is still valid

@@ -1,26 +1,26 @@
 const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
 
 const { Actor } = require('../models/actors.model');
-const { Movies } = require('../models/movies.model');
+const { Movie } = require('../models/movies.model');
 const { AppError } = require('../utils/appError');
 const { catchAsync } = require('../utils/catchAsync');
 const { filterObj } = require('../utils/filterObj');
 const { storage } = require('../utils/firebase');
 
 exports.getAllActors = catchAsync(async (req, res, next) => {
-  const actor = await Actor.findAll({
+  const actors = await Actor.findAll({
     where: { status: 'active' },
-    include: [{ model: Movies }]
+    include: [{ model: Movie}]
   });
 
   //console.log(user);
   //if(!review){
-  if (actor.length === 0) {
+  if (actors.length === 0) {
     return next(new AppError(404, 'There are not actors until'));
   }
 
   // Promise[]
-  const actorPromises = actor.map(
+  const actorPromises = actors.map(
     async ({
       id,
       name,
@@ -29,7 +29,8 @@ exports.getAllActors = catchAsync(async (req, res, next) => {
       age,
       profilePic,
       createdAt,
-      updatedAt
+      updatedAt,
+      movies
     }) => {
       const imgRef = ref(storage, profilePic);
 
@@ -43,7 +44,8 @@ exports.getAllActors = catchAsync(async (req, res, next) => {
         age,
         profilePic: imgDownloadUrl,
         createdAt,
-        updatedAt
+        updatedAt,
+        movies
       };
     }
   );
@@ -59,16 +61,7 @@ exports.getAllActors = catchAsync(async (req, res, next) => {
 });
 
 exports.getActorsById = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const actor = await Actor.findOne({
-    where: { id: id, status: 'active' },
-    include: [{ model: Movies }]
-  });
-
-  if (!actor) {
-    return next(new AppError(404, `The id ${id} selected was not found`));
-  }
-
+  const { actor } = req
   res.status(200).json({
     status: 'success',
     data: {
@@ -133,23 +126,16 @@ exports.updateActor = catchAsync(async (req, res, next) => {
   await actor.update({ ...data });
   res.status(201).json({
     status: 'success',
-    message: `The actor with id ${id} was update correctly`
+    message: `The actor with id ${actor.id} was update correctly`
   });
 });
 
 exports.deleteActor = catchAsync(async (req, res, next) => {
-  const { id } = req.params;
-  const actor = await Actor.findOne({
-    where: { id: id, status: 'active' }
-  });
-
-  if (!actor) {
-    return next(new AppError(400, 'Id not found'));
-  }
-
+  const { actor } = req
+  
   await actor.update({ status: 'deleted' });
   res.status(201).json({
     status: 'success',
-    message: `The Id ${id} was deleted correctly`
+    message: `The Id ${actor.id} was deleted correctly`
   });
 });

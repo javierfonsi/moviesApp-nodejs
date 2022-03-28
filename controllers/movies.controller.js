@@ -1,6 +1,6 @@
 const { ref, uploadBytes, getDownloadURL } = require('firebase/storage');
 const { Actor } = require('../models/actors.model');
-const { Movies } = require('../models/movies.model');
+const { Movie } = require('../models/movies.model');
 const { Review } = require('../models/reviews.model');
 const { AppError } = require('../utils/appError');
 const { catchAsync } = require('../utils/catchAsync');
@@ -8,24 +8,24 @@ const { filterObj } = require('../utils/filterObj');
 const { storage } = require('../utils/firebase');
 
 exports.getAllMovies = catchAsync(async (req, res, next) => {
-  const movies = await Movies.findAll({
+  const movie = await Movie.findAll({
     where: { status: 'active' },
     include: [
       {
-        model: Actor 
+        model: Actor
         //attributes: { exclude: ['actorsinmovies'] }
       }
     ]
-    //, include:[{ model: Review}]
+    //, 
     //No sirve, revisar con Robert
   });
 
-  if (movies.length === 0) {
+  if (movie.length === 0) {
     return next(new AppError(404, 'There are not movies until'));
   }
 
   // Promise[]
-  const moviesPromises = movies.map(
+  const moviesPromises = movie.map(
     async ({
       id,
       title,
@@ -36,7 +36,8 @@ exports.getAllMovies = catchAsync(async (req, res, next) => {
       createdAt,
       updatedAt,
       genre,
-      actors
+      actors,
+      reviews
     }) => {
       const imgRef = ref(storage, imgUrl);
 
@@ -52,7 +53,8 @@ exports.getAllMovies = catchAsync(async (req, res, next) => {
         createdAt,
         updatedAt,
         genre,
-        actors
+        actors,
+        reviews
       };
     }
   );
@@ -60,8 +62,7 @@ exports.getAllMovies = catchAsync(async (req, res, next) => {
   const resolvedMovies = await Promise.all(moviesPromises);
 
   const moviesMapeado = resolvedMovies.map((movie) => {
-    movie.actorsinmovies = undefined;
-
+    movie.actorsinmovies = null;
     return movie;
   });
   //console.log(moviesMapeado);
@@ -77,7 +78,7 @@ exports.getAllMovies = catchAsync(async (req, res, next) => {
 exports.getMovieById = catchAsync(async (req, res, next) => {
   //const { movie } = req;
   const { id } = req.movie;
-  const movieSelected = await Movies.findOne({
+  const movieSelected = await Movie.findOne({
     where: {id, status: 'active'}, include: [{model : Actor}]  
   }) 
   res.status(200).json({
@@ -99,7 +100,7 @@ exports.createMovie = catchAsync(async (req, res, next) => {
   const imgRef = ref(storage, `imgs/${Date.now()}-${req.file.originalname}`);
   const result = await uploadBytes(imgRef, req.file.buffer);
 
-  const movie = await Movies.create({
+  const movie = await Movie.create({
     title: title,
     description: description,
     duration: duration,
