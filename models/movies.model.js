@@ -35,7 +35,7 @@ const Movie = sequelize.define('movie', {
     }
   },
   imgUrl: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: false
   },
   genre: {

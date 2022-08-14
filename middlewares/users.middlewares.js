@@ -26,7 +26,7 @@ exports.protectAccountOwner = catchAsync(async (req, res, next) => {
   const { currentUser } = req;
 
   if (currentUser.id !== +id) {
-    return next(new AppError(403, `You can't update other users accounts`));
+    return next(new AppError(403, `You can't update or delete other users accounts`));
   }
 
   next();

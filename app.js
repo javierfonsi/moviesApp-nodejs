@@ -1,5 +1,8 @@
 const express = require('express');
+const swaggerUI = require('swagger-ui-express')
+const swaggerJsDoc = require('swagger-jsdoc')
 const cors = require('cors');
+const path = require('path')
 
 //Controllers
 const { globalErrorhandler } = require('./controllers/error.controller');
@@ -13,6 +16,34 @@ const { actorsRouter } = require('./routes/actor.routes');
 
 //utils
 const { AppError } = require('./utils/appError');
+
+//swagger
+const swaggerSpec = {
+  definition:{
+      openapi: '3.0.3',
+      info: {
+          title: "Movies API",
+          description: "This is a simple orders delivery movies store server, based on the OpenAPI 3.0 specification. The user must be create an account and perform login, select a movie menu and see details, as reviews, it is possible add comments.", 
+          contact: {
+              "name": "Javier Rodrigo Fonseca Leal",
+              "url": "https://portafolio-javierfonseca.netlify.app/",
+              "email": "javierrfl1985@gmail.com"
+            },
+          version: "1.0.0"
+      },
+      servers: [
+          {
+            "url":"http://localhost:4000",
+            "description": "Development server"
+          },
+          {
+            "url": "https://moviesappbyjrfl.herokuapp.com/api/v1/doc",
+            "description": "Production server"
+          },
+      ]
+  },
+  apis: [`${path.join(__dirname, './routes/*.js')}`]
+}
 
 //init server
 const app = express();
@@ -32,6 +63,7 @@ app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/movies', movieRouter);
 app.use('/api/v1/actorsinmovies', actorsinmoviesRouter);
 app.use('/api/v1/actors', actorsRouter);
+app.use('/api/v1/doc', swaggerUI.serve, swaggerUI.setup(swaggerJsDoc(swaggerSpec)))
 
 app.use('*', (req, res, next) => {
   next(new AppError(404, `${req.originalUrl} not found in this server.`));
