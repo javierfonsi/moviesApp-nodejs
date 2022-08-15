@@ -127,7 +127,7 @@ router.get('/:id', actorExist, getActorsById);
  *  post:
  *    security:
  *      - bearerAuth: []
- *    summary: allow add a new actor
+ *    summary: allows add a new actor
  *    tags: [Actor]
  *    requestBody: 
  *      content:
