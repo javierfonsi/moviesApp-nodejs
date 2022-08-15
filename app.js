@@ -37,7 +37,7 @@ const swaggerSpec = {
             "description": "Development server"
           },
           {
-            "url": "https://moviesappbyjrfl.herokuapp.com/api/v1/doc",
+            "url": "https://moviesappbyjrfl.herokuapp.com/",
             "description": "Production server"
           },
       ]
