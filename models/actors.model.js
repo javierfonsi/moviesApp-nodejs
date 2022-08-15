@@ -24,10 +24,10 @@ const Actor = sequelize.define('actor', {
     type: DataTypes.INTEGER,
     allowNull: false,
     require: true,
-    validate: {
-      max:5,
-      min:1
-    }
+    //validate: {
+    //  max:5,
+    //  min:1
+    //}
   },
   age: {
     type: DataTypes.INTEGER,
