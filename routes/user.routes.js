@@ -136,7 +136,7 @@ router.post('/', createUser);
  *    tags: [User]
  *    responses:
  *      200:
- *        description: Return all user
+ *        description: returns all user
  *        content:
  *          application/json:
  *              schema:
@@ -155,14 +155,14 @@ router.use('/:id', userExists);
 router
   .route('/:id')
 
-  //get user by id
+//get user by id
 /**
  * @swagger
  * /api/v1/users/{id}:
  *  get:
  *    security:
  *      - bearerAuth: []
- *    summary: returns a user by id 
+ *    summary: returns an user by id 
  *    tags: [User] 
  *    parameters:
  *      - in: path
@@ -170,7 +170,7 @@ router
  *        schema:
  *          type: string
  *        required: true
- *        description: according to user id
+ *        description: according to id user
  *    responses:
  *      200:
  *        description: Return user by id

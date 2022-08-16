@@ -19,7 +19,7 @@ const router = express.Router();
 router.use(validateSession);
 
 
-//Actor schema
+//actor schema
 /**
  * @swagger
  * components:
@@ -48,8 +48,9 @@ router.use(validateSession);
  *              type: integer
  *              description: age actor.
  *              max-size: 10 chars
- *          profilePic:
+ *          pictureProfile:
  *              type: string
+ *              format: base64
  *              description: image actor.
  *              max-length: 200 chars
  *        required:
@@ -57,13 +58,13 @@ router.use(validateSession);
  *          - country
  *          - rating
  *          - age
- *          - profilepic
+ *          - pictureProfile
  *        example:
  *          name: Jenifer Lopez
  *          country: EE.UU
  *          rating: 5
  *          age: 53
- *          profilePic: JLO.jpg 
+ *          pictureProfile: JLO.jpg 
  */
 
 //Get all Actors
@@ -97,7 +98,7 @@ router.get('/', getAllActors);
  *  get:
  *    security:
  *      - bearerAuth: []
- *    summary: returns a actor by id
+ *    summary: returns an actor by id
  *    tags: [Actor]
  *    parameters:
  *      - in: path
@@ -129,32 +130,22 @@ router.get('/:id', actorExist, getActorsById);
  *      - bearerAuth: []
  *    summary: allows add a new actor
  *    tags: [Actor]
- *    requestBody: 
+ *    requestBody:
+ *      required: true 
  *      content:
  *          multipart/form-data:
  *            schema:
  *              type: object
- *              properties:
- *                name:
- *                  type: string
- *                  format: uuid
- *                country:
- *                  type: string
- *                  format: uuid
- *                rating:
- *                  type: integer
- *                  format: uuid
- *                age:
- *                  type: integer
- *                  format: uuid
- *                profilePic:
- *                  type: string
- *                  format: binary
+ *              $ref: '#/components/schemas/Actor'
  *    responses:
- *      201:
+ *      200:
  *        description: new actor was created!
  *      400:
  *        description: some properties and/or their values are incorrect
+ *      401:
+ *        description: Unauthorized, the token was not delivered.
+ *      500:
+ *        description: Error, JsonWebTokenError invalid signature.
  *  
  */
 router.post('/', userAdmin, upload.single('pictureProfile'), createActor);
@@ -164,7 +155,81 @@ router
   .use('/:id', userAdmin, actorExist)
   .route('/:id', actorExist)
 router.route('/:id')
+
+//patch actor by id
+/**
+ * @swagger
+ * /api/v1/actors/{id}:
+ *  patch:
+ *    security:
+ *      - bearerAuth: []
+ *    summary: allows update the data actor by id 
+ *    tags: [Actor] 
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: according to id actor
+ *    requestBody: 
+ *      required: true
+ *      content:
+ *          application/json:
+ *              schema:
+ *                type: object
+ *                $ref: '#/components/schemas/Actor'
+ *    responses:
+ *      201:
+ *        description: data actor was modified correctly
+ *        content:
+ *          application/json:
+ *              schema:
+ *                  type: object
+ *                  items:
+ *                    $ref: '#/components/schemas/Actor'
+ *      401:
+ *        description: The token was not delivered, please verified it
+ *      403:
+ *        description: You can´t update account actor
+ *      500:
+ *        description: Invalid signature
+ */
   .patch( userAdmin, updateActor)
+
+//delete user by id owner
+/**
+ * @swagger
+ * /api/v1/actors/{id}:
+ *  delete:
+ *    security:
+ *      - bearerAuth: []
+ *    summary: allows delete an actor  
+ *    tags: [Actor] 
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: according to id actor
+ *    responses:
+ *      201:
+ *        description: The id actor was deleted correctly
+ *        content:
+ *          application/json:
+ *              schema:
+ *                  type: object
+ *                  items:
+ *                    $ref: '#/components/schemas/Actor'
+ *      401:
+ *        description: The token was not delivered, please verified it
+ *      403:
+ *        description: You can´t update info actor
+ *      500:
+ *        description: Invalid signature
+ */  
+
   .delete( userAdmin, deleteActor)
 //router.patch('/:id', updateActor);
 //router.delete('/:id', );
